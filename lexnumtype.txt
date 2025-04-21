@@ -1,0 +1,43 @@
+%{
+#include "y.tab.h"
+%}
+
+%%
+[0-9]+"."[0-9]+     { return FLOAT; }
+[0-9]+"."           { return FLOAT; }
+"."[0-9]+           { return FLOAT; }
+[0-9]+              { return INTEGER; }
+.|\n                { return INVALID; }
+%%
+
+
+
+%{
+#include <stdio.h>
+%}
+
+%token INTEGER FLOAT INVALID
+
+%%
+input:
+    INTEGER     { printf("It's an Integer.\n"); }
+  | FLOAT       { printf("It's a Floating-point number.\n"); }
+  | INVALID     { printf("Invalid Number.\n"); }
+;
+%%
+
+int main() {
+    printf("Enter a number: ");
+    yyparse();
+    return 0;
+}
+
+int yyerror(char *s) {
+    return 0;
+}
+
+
+lex numtype.l
+yacc -d numtype.y
+cc lex.yy.c y.tab.c -o numtype
+./numtype
